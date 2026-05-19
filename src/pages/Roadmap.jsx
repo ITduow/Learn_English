@@ -1,14 +1,24 @@
 const roadmap = [
-  ["Day 1-3", "Basic Daily English"],
-  ["Day 4-6", "Education"],
-  ["Day 7-9", "Technology"],
-  ["Day 10-12", "Health"],
-  ["Day 13-15", "Environment"],
-  ["Day 16-18", "Work"],
-  ["Day 19-21", "City & Transport"],
-  ["Day 22-24", "Family & Society"],
-  ["Day 25-27", "Media & Internet"],
-  ["Day 28-30", "IELTS Common Words + Review"],
+  [
+    "Day 1-50",
+    "Foundation A1",
+    "Học từ cơ bản về bản thân, gia đình, trường học, đồ vật và hành động thường ngày.",
+  ],
+  [
+    "Day 51-110",
+    "Elementary A2",
+    "Học từ giao tiếp phổ biến, thói quen, du lịch, mua sắm và công việc cơ bản.",
+  ],
+  [
+    "Day 111-210",
+    "Intermediate B1",
+    "Học từ theo chủ đề IELTS như education, health, environment, technology và society.",
+  ],
+  [
+    "Day 211-300",
+    "Upper-intermediate B2 / IELTS 5.5-6.5",
+    "Học từ học thuật nhẹ, collocation, opinion vocabulary, cause-effect và problem-solution.",
+  ],
 ];
 
 const steps = [
@@ -25,21 +35,22 @@ export default function Roadmap() {
     <div className="page-shell">
       <div className="mb-6">
         <p className="text-sm font-bold text-leaf">Roadmap</p>
-        <h1 className="text-3xl font-black">Lộ trình 30 ngày</h1>
+        <h1 className="text-3xl font-black">Lộ trình 300 ngày</h1>
         <p className="mt-2 max-w-3xl text-slate-600">
-          Từ cơ bản A1 đến nhóm từ học thuật phổ biến B2, phù hợp người mới bắt đầu xây nền để hướng tới IELTS 6.5.
+          Từ A1 đến B2, phù hợp người mới bắt đầu xây nền để hướng tới mục tiêu IELTS 6.5.
         </p>
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         <section className="grid gap-3">
-          {roadmap.map(([days, topic], index) => (
+          {roadmap.map(([days, topic, description], index) => (
             <article key={days} className="panel flex items-center gap-4 p-4">
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-skysoft text-sm font-black text-leaf">
                 {index + 1}
               </span>
               <div>
                 <h2 className="text-lg font-black">{days}</h2>
-                <p className="text-slate-600">{topic}</p>
+                <p className="font-semibold text-slate-700">{topic}</p>
+                <p className="mt-1 text-sm text-slate-600">{description}</p>
               </div>
             </article>
           ))}

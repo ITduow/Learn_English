@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
-import vocabulary from "../data/vocabulary.js";
 import ProgressBar from "../components/ProgressBar.jsx";
-import { getCurrentRecommendedDay, getProgressSummary, getTopics, TOTAL_DAYS } from "../utils/vocabularyHelpers.js";
+import { TOTAL_DAYS, TOTAL_WORDS, TOPICS } from "../data/vocabulary/meta.js";
+import { getAllProgressData } from "../utils/localStorage.js";
 
 export default function Home() {
-  const summary = getProgressSummary();
-  const today = getCurrentRecommendedDay();
+  const progressData = getAllProgressData();
+  const learnedWordsCount = progressData.learnedWords.length;
+  const today = Math.min(TOTAL_DAYS, progressData.completedDays.length ? Math.max(...progressData.completedDays) + 1 : 1);
+  const progressPercent = Math.round((learnedWordsCount / TOTAL_WORDS) * 100);
   const stats = [
     { label: "Ngày học", value: TOTAL_DAYS },
-    { label: "Từ vựng", value: vocabulary.length },
-    { label: "Topic", value: getTopics().length },
+    { label: "Từ vựng", value: TOTAL_WORDS },
+    { label: "Topic", value: TOPICS.length },
   ];
 
   return (
@@ -45,7 +47,7 @@ export default function Home() {
             ))}
           </div>
           <div className="mt-6">
-            <ProgressBar value={summary.progressPercent} label="Tiến độ học từ" />
+            <ProgressBar value={progressPercent} label="Tiến độ học từ" />
           </div>
           <div className="mt-5 rounded-lg bg-emerald-50 p-4 text-sm text-emerald-900">
             Ngày gợi ý: <strong>Day {today}</strong>. Học xong 10 từ, hãy đặt câu và làm quiz ngay khi còn nhớ.

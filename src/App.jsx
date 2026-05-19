@@ -1,28 +1,32 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
-import Home from "./pages/Home.jsx";
-import DailyVocabulary from "./pages/DailyVocabulary.jsx";
-import Practice from "./pages/Practice.jsx";
-import Quiz from "./pages/Quiz.jsx";
-import Progress from "./pages/Progress.jsx";
-import Review from "./pages/Review.jsx";
-import Roadmap from "./pages/Roadmap.jsx";
+
+const Home = lazy(() => import("./pages/Home.jsx"));
+const DailyVocabulary = lazy(() => import("./pages/DailyVocabulary.jsx"));
+const Practice = lazy(() => import("./pages/Practice.jsx"));
+const Quiz = lazy(() => import("./pages/Quiz.jsx"));
+const Progress = lazy(() => import("./pages/Progress.jsx"));
+const Review = lazy(() => import("./pages/Review.jsx"));
+const Roadmap = lazy(() => import("./pages/Roadmap.jsx"));
 
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col bg-mist text-ink">
       <Navbar />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/daily" element={<DailyVocabulary />} />
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/progress" element={<Progress />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/roadmap" element={<Roadmap />} />
-        </Routes>
+        <Suspense fallback={<div className="page-shell text-sm font-semibold text-slate-600">Đang tải trang học...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/daily" element={<DailyVocabulary />} />
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="/review" element={<Review />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
     </div>

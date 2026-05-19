@@ -1,23 +1,30 @@
-import vocabulary from "../data/vocabulary.js";
+import vocabulary, {
+  getAllVocabulary,
+  getTotalDays,
+  getTotalWords,
+  getVocabularyByDay,
+  getVocabularyByLevel,
+  getVocabularyByTopic,
+} from "../data/vocabulary/index.js";
 import { getAllProgressData } from "./localStorage.js";
 
-export const TOTAL_DAYS = 30;
+export const TOTAL_DAYS = getTotalDays();
 export const WORDS_PER_DAY = 10;
 
 export function getWordsByDay(dayNumber) {
-  return vocabulary.filter((item) => item.day_number === Number(dayNumber));
+  return getVocabularyByDay(dayNumber);
 }
 
 export function getWordsByTopic(topic) {
-  return topic ? vocabulary.filter((item) => item.topic === topic) : vocabulary;
+  return getVocabularyByTopic(topic);
 }
 
 export function getWordsByLevel(level) {
-  return level ? vocabulary.filter((item) => item.level === level) : vocabulary;
+  return getVocabularyByLevel(level);
 }
 
 export function getTopics() {
-  return [...new Set(vocabulary.map((item) => item.topic))];
+  return [...new Set(getAllVocabulary().map((item) => item.topic))];
 }
 
 export function getLevels() {
@@ -40,9 +47,9 @@ export function getProgressSummary() {
     completedDaysCount: completedDays.length,
     averageQuiz,
     streak,
-    totalWords: vocabulary.length,
+    totalWords: getTotalWords(),
     totalDays: TOTAL_DAYS,
-    progressPercent: Math.round((learnedWords.length / vocabulary.length) * 100),
+    progressPercent: Math.round((learnedWords.length / getTotalWords()) * 100),
   };
 }
 

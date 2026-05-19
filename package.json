@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "generate-data": "node scripts/generate-vocabulary.mjs",
+    "validate-data": "node scripts/validate-vocabulary.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
