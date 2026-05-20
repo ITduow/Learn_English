@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import DaySelector from "../components/DaySelector.jsx";
 import QuizCard from "../components/QuizCard.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import { saveQuizResult } from "../utils/localStorage.js";
+import { applyStudyDate } from "../utils/progressCalculations.js";
 import { getWordsByDay, TOTAL_DAYS } from "../utils/vocabularyHelpers.js";
 
 export default function Quiz() {
+  const { isAuthenticated, progressData, saveCloudProgress, progressLoading } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentDay, setCurrentDay] = useState(Number(searchParams.get("day")) || 1);
   const [answers, setAnswers] = useState({});
@@ -21,8 +24,26 @@ export default function Quiz() {
     setSearchParams({ day: String(day) });
   }
 
-  function handleFinish() {
-    saveQuizResult(currentDay, score, quizItems.length);
+  async function handleFinish() {
+    const result = {
+      dayNumber: currentDay,
+      score,
+      total: quizItems.length,
+      percent: quizItems.length ? Math.round((score / quizItems.length) * 100) : 0,
+      completedAt: new Date().toISOString(),
+    };
+
+    if (!isAuthenticated) {
+      saveQuizResult(currentDay, score, quizItems.length);
+      setSaved(true);
+      return;
+    }
+
+    const quizResults = [
+      ...progressData.quizResults.filter((item) => item.dayNumber !== currentDay),
+      result,
+    ].sort((a, b) => a.dayNumber - b.dayNumber);
+    await saveCloudProgress(applyStudyDate({ ...progressData, quizResults }));
     setSaved(true);
   }
 
@@ -38,6 +59,11 @@ export default function Quiz() {
           Điểm: {score}/{quizItems.length}
         </div>
       </div>
+      {!isAuthenticated && (
+        <div className="mb-6 rounded-lg bg-skysoft p-4 text-sm font-semibold text-slate-700">
+          Điểm quiz đang lưu tạm trên trình duyệt này. <Link className="text-leaf underline" to="/login">Đăng nhập để đồng bộ</Link>
+        </div>
+      )}
       <div className="panel mb-6 p-4">
         <DaySelector currentDay={currentDay} totalDays={TOTAL_DAYS} onChange={changeDay} />
       </div>
@@ -54,8 +80,8 @@ export default function Quiz() {
       <div className="mt-6 panel p-5">
         <h2 className="text-xl font-black">Kết quả</h2>
         <p className="mt-2 text-slate-600">Hoàn thành đủ câu để lưu điểm quiz vào tiến độ.</p>
-        <button className="btn-primary mt-4" disabled={!completed} onClick={handleFinish}>
-          {saved ? "Đã lưu kết quả" : "Lưu kết quả quiz"}
+        <button className="btn-primary mt-4" disabled={!completed || progressLoading} onClick={handleFinish}>
+          {saved ? "Đã lưu kết quả" : progressLoading ? "Đang lưu..." : "Lưu kết quả quiz"}
         </button>
       </div>
     </div>

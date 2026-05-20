@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import UserMenu from "./UserMenu.jsx";
 
 const links = [
   { to: "/", label: "Trang chủ" },
@@ -23,20 +24,23 @@ export default function Navbar() {
             <span className="block text-xs font-medium text-slate-500">10 từ mỗi ngày</span>
           </span>
         </NavLink>
-        <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
-          {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                  isActive ? "bg-skysoft text-leaf" : "text-slate-600 hover:bg-slate-100"
-                }`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+            {links.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    isActive ? "bg-skysoft text-leaf" : "text-slate-600 hover:bg-slate-100"
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </div>
+          <UserMenu />
         </div>
       </nav>
     </header>

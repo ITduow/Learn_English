@@ -1,10 +1,17 @@
 import ProgressBar from "../components/ProgressBar.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import { getAllProgressData } from "../utils/localStorage.js";
 import { getProgressSummary } from "../utils/vocabularyHelpers.js";
+import { TOTAL_WORDS } from "../data/vocabulary/meta.js";
+import { getProgressSummaryFromData } from "../utils/progressCalculations.js";
 
 export default function Progress() {
-  const summary = getProgressSummary();
-  const data = getAllProgressData();
+  const { currentUser, isAuthenticated, progressData, progressLoading } = useAuth();
+  const localSummary = getProgressSummary();
+  const localData = getAllProgressData();
+  const cloudSummary = getProgressSummaryFromData(progressData, TOTAL_WORDS);
+  const summary = isAuthenticated ? { ...cloudSummary, totalWords: TOTAL_WORDS } : localSummary;
+  const data = isAuthenticated ? progressData : localData;
 
   const cards = [
     { label: "Số ngày đã học", value: summary.completedDaysCount },
@@ -18,8 +25,13 @@ export default function Progress() {
       <div className="mb-6">
         <p className="text-sm font-bold text-leaf">Progress</p>
         <h1 className="text-3xl font-black">Tiến độ học của bạn</h1>
-        <p className="mt-2 text-slate-600">Dữ liệu được lưu trong localStorage trên trình duyệt này.</p>
+        <p className="mt-2 text-slate-600">
+          {isAuthenticated
+            ? `Đang lưu theo tài khoản ${currentUser?.displayName || currentUser?.email}.`
+            : "Dữ liệu đang được lưu tạm trong localStorage trên trình duyệt này."}
+        </p>
       </div>
+      {progressLoading && <p className="mb-4 text-sm font-semibold text-slate-500">Đang đồng bộ Firestore...</p>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <div key={card.label} className="panel p-5">
